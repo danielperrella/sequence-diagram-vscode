@@ -8,3 +8,4 @@ media/webview-runtime.js.map
 .DS_Store
 .vscode-test/
 __MACOSX/
+docs/release.md
