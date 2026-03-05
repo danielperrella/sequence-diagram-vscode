@@ -4,7 +4,8 @@
   "description": "Edit .seqdiag files in VS Code with live SequenceDiagram preview, export, and writing assistance.",
   "version": "1.0.0",
   "packageManager": "pnpm@10.6.5",
-  "publisher": "dperrella001",
+  "author": "Daniel Perrella",
+  "publisher": "PerrellaDaniel",
   "license": "MIT",
   "icon": "media/icon.png",
   "repository": {
