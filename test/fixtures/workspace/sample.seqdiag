@@ -1,0 +1,3 @@
+title Sample
+Alice->Bob: Ping
+Bob-->Alice: Pong

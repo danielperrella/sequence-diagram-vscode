@@ -1,0 +1,438 @@
+import { SyntaxEntry } from "./types";
+
+export const syntaxCatalog: SyntaxEntry[] = [
+  {
+    id: "comment",
+    category: "comments",
+    keywords: ["#", "//"],
+    patterns: ["# comment"],
+    description: "Adds a comment line ignored by rendering.",
+    examples: ["# TODO: refine this interaction"],
+    insertText: "# ${1:comment}",
+    detail: "Comment",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 60
+  },
+  {
+    id: "title",
+    category: "title",
+    keywords: ["title"],
+    patterns: ["title <text>"],
+    description: "Sets the diagram title.",
+    examples: ["title Checkout Flow"],
+    insertText: "title ${1:Diagram Title}",
+    detail: "Title",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 100
+  },
+  {
+    id: "participant",
+    category: "participants",
+    keywords: ["participant", "actor", "boundary", "control", "entity", "database", "collections"],
+    patterns: ["participant Alice", "actor User as U"],
+    description: "Declares participants and aliases.",
+    examples: ["participant \"Order Service\" as OrderSvc"],
+    insertText: "participant ${1:Alice}",
+    detail: "Participant declaration",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 95
+  },
+  {
+    id: "bottom-participants",
+    category: "bottom-participants",
+    keywords: ["bottom participants"],
+    patterns: ["bottom participants"],
+    description: "Moves participant list to diagram bottom.",
+    examples: ["bottom participants"],
+    insertText: "bottom participants",
+    detail: "Bottom participants",
+    kind: "keyword",
+    triggerContexts: ["lineStart", "any"],
+    priority: 50
+  },
+  {
+    id: "message",
+    category: "messages",
+    keywords: ["->", "-->", "->>"],
+    patterns: ["Alice->Bob: hello"],
+    description: "Sends a message from one participant to another.",
+    examples: ["Client->Server: Request"],
+    insertText: "${1:Alice}->${2:Bob}: ${3:message}",
+    detail: "Message",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "afterParticipant", "afterArrow", "any"],
+    priority: 110
+  },
+  {
+    id: "message-non-instant",
+    category: "message-timing",
+    keywords: ["=>", "=>>"],
+    patterns: ["Alice=>Bob: async work"],
+    description: "Represents non-instantaneous message transfer.",
+    examples: ["Worker=>>Queue: enqueue"],
+    insertText: "${1:Alice}=>${2:Bob}: ${3:async message}",
+    detail: "Non-instantaneous message",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "afterParticipant", "any"],
+    priority: 80
+  },
+  {
+    id: "incoming-outgoing",
+    category: "incoming-outgoing",
+    keywords: ["[->", "->]", "[=>", "=>]"],
+    patterns: ["[-> Alice: incoming", "Bob ->]: outgoing"],
+    description: "Models incoming or outgoing external messages.",
+    examples: ["[-> API: webhook"],
+    insertText: "[-> ${1:Participant}: ${2:incoming}",
+    detail: "Incoming/Outgoing",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 70
+  },
+  {
+    id: "failure-message",
+    category: "failure-messages",
+    keywords: ["-x", "x-"],
+    patterns: ["Alice-x Bob: failure"],
+    description: "Represents failed or rejected messages.",
+    examples: ["Gateway-x Service: timeout"],
+    insertText: "${1:Alice}-x ${2:Bob}: ${3:failure}",
+    detail: "Failure message",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "afterParticipant", "any"],
+    priority: 70
+  },
+  {
+    id: "note-over",
+    category: "notes-boxes",
+    keywords: ["note over", "note left of", "note right of"],
+    patterns: ["note over Alice: text"],
+    description: "Adds a note attached to one or more participants.",
+    examples: ["note over Alice,Bob: Shared state"],
+    insertText: "note over ${1:Alice}: ${2:note}",
+    detail: "Note",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 90
+  },
+  {
+    id: "box",
+    category: "notes-boxes",
+    keywords: ["box"],
+    patterns: ["box Group Label", "end"],
+    description: "Wraps participants in a visual labeled box.",
+    examples: ["box Backend\nparticipant API\nend"],
+    insertText: "box ${1:Group}\n${2:participant API}\nend",
+    detail: "Box",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 70
+  },
+  {
+    id: "reference",
+    category: "references",
+    keywords: ["ref over"],
+    patterns: ["ref over Alice,Bob: call detail"],
+    description: "Adds a reference frame over participants.",
+    examples: ["ref over API,DB: Persist transaction"],
+    insertText: "ref over ${1:Alice,Bob}: ${2:reference}",
+    detail: "Reference",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 65
+  },
+  {
+    id: "divider",
+    category: "dividers",
+    keywords: ["=="],
+    patterns: ["== Phase =="],
+    description: "Adds a visual divider between timeline parts.",
+    examples: ["== Retry =="],
+    insertText: "== ${1:Section} ==",
+    detail: "Divider",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 55
+  },
+  {
+    id: "create",
+    category: "create-destroy",
+    keywords: ["create", "destroy"],
+    patterns: ["create Worker", "destroy Worker"],
+    description: "Creates or destroys a participant lifecycle.",
+    examples: ["create JobRunner"],
+    insertText: "create ${1:Participant}",
+    detail: "Create/Destroy",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 65
+  },
+  {
+    id: "activate",
+    category: "activations",
+    keywords: ["activate", "deactivate"],
+    patterns: ["activate API", "deactivate API"],
+    description: "Controls activation bars explicitly.",
+    examples: ["activate Server"],
+    insertText: "activate ${1:Participant}",
+    detail: "Activation",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 70
+  },
+  {
+    id: "autoactivate",
+    category: "auto-activation",
+    keywords: ["autoactivate on", "autoactivate off"],
+    patterns: ["autoactivate on"],
+    description: "Enables automatic activation bars.",
+    examples: ["autoactivate on"],
+    insertText: "autoactivate ${1|on,off|}",
+    detail: "Auto activation",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 45
+  },
+  {
+    id: "space",
+    category: "spaces",
+    keywords: ["..."],
+    patterns: ["..."],
+    description: "Adds vertical spacing in timeline.",
+    examples: ["..."],
+    insertText: "...",
+    detail: "Space",
+    kind: "keyword",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 30
+  },
+  {
+    id: "fragment-alt",
+    category: "fragments",
+    keywords: ["alt", "else", "end", "opt", "loop", "par", "critical", "break"],
+    patterns: ["alt condition", "else", "end"],
+    description: "Creates sequence fragments for conditions and loops.",
+    examples: ["alt success\nA->B: ok\nelse fail\nA->B: retry\nend"],
+    insertText: "alt ${1:condition}\n${2:Alice->Bob: message}\nelse ${3:otherwise}\n${4:Alice->Bob: fallback}\nend",
+    detail: "Fragment",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 105
+  },
+  {
+    id: "participant-group",
+    category: "participant-groups",
+    keywords: ["participantgroup", "end"],
+    patterns: ["participantgroup Group", "end"],
+    description: "Groups participants in a named block.",
+    examples: ["participantgroup Services\nparticipant API\nend"],
+    insertText: "participantgroup ${1:Group}\n${2:participant API}\nend",
+    detail: "Participant group",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 55
+  },
+  {
+    id: "link",
+    category: "links",
+    keywords: ["link"],
+    patterns: ["link Alice: https://example.com"],
+    description: "Attaches hyperlinks to participants or elements.",
+    examples: ["link API: https://internal/wiki/api"],
+    insertText: "link ${1:Participant}: ${2:https://example.com}",
+    detail: "Link",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 40
+  },
+  {
+    id: "frame",
+    category: "frame",
+    keywords: ["frame", "end"],
+    patterns: ["frame Label", "end"],
+    description: "Wraps a section in a frame.",
+    examples: ["frame Transaction\nA->B: do\nend"],
+    insertText: "frame ${1:Frame}\n${2:Alice->Bob: message}\nend",
+    detail: "Frame",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 60
+  },
+  {
+    id: "style-element",
+    category: "element-styling",
+    keywords: ["style"],
+    patterns: ["style Participant fill:#eef"],
+    description: "Applies visual style to a target element.",
+    examples: ["style API fill:#eef,stroke:#224"],
+    insertText: "style ${1:Target} ${2:fill:#eef,stroke:#224}",
+    detail: "Element styling",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "insideBlock", "any"],
+    priority: 65
+  },
+  {
+    id: "style-text",
+    category: "text-styling",
+    keywords: ["textstyle", "bold", "italic", "underline"],
+    patterns: ["textstyle message bold"],
+    description: "Styles text appearance.",
+    examples: ["textstyle note italic"],
+    insertText: "textstyle ${1:message} ${2:bold}",
+    detail: "Text styling",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 40
+  },
+  {
+    id: "named-style",
+    category: "named-type-styles",
+    keywords: ["defstyle", "applystyle"],
+    patterns: ["defstyle api fill:#eef", "applystyle API api"],
+    description: "Defines and applies named or type-based styles.",
+    examples: ["defstyle database fill:#ffe"],
+    insertText: "defstyle ${1:styleName} ${2:fill:#eef,stroke:#223}",
+    detail: "Named style",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 45
+  },
+  {
+    id: "active-color",
+    category: "active-color",
+    keywords: ["activecolor"],
+    patterns: ["activecolor #cfe8ff"],
+    description: "Sets default activation bar color.",
+    examples: ["activecolor #dae8fc"],
+    insertText: "activecolor ${1:#dae8fc}",
+    detail: "Active color",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 30
+  },
+  {
+    id: "font",
+    category: "fonts",
+    keywords: ["font"],
+    patterns: ["font family:Inter,size:14"],
+    description: "Controls font family and size.",
+    examples: ["font family:Arial,size:14"],
+    insertText: "font ${1:family:Arial,size:14}",
+    detail: "Font",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 30
+  },
+  {
+    id: "autonumber",
+    category: "automatic-numbering",
+    keywords: ["autonumber"],
+    patterns: ["autonumber", "autonumber 10"],
+    description: "Enables automatic numbering for messages.",
+    examples: ["autonumber 1"],
+    insertText: "autonumber ${1:1}",
+    detail: "Automatic numbering",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 35
+  },
+  {
+    id: "linear",
+    category: "linear-messages",
+    keywords: ["linear", "linear on", "linear off"],
+    patterns: ["linear on"],
+    description: "Configures linear message layout behavior.",
+    examples: ["linear on"],
+    insertText: "linear ${1|on,off|}",
+    detail: "Linear messages",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 35
+  },
+  {
+    id: "parallel",
+    category: "parallel",
+    keywords: ["parallel"],
+    patterns: ["parallel"],
+    description: "Enables parallel lifeline layout mode.",
+    examples: ["parallel"],
+    insertText: "parallel",
+    detail: "Parallel",
+    kind: "keyword",
+    triggerContexts: ["lineStart", "any"],
+    priority: 35
+  },
+  {
+    id: "participantspacing",
+    category: "participant-spacing",
+    keywords: ["participantspacing"],
+    patterns: ["participantspacing 40"],
+    description: "Sets spacing between participants.",
+    examples: ["participantspacing 48"],
+    insertText: "participantspacing ${1:48}",
+    detail: "Participant spacing",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 35
+  },
+  {
+    id: "entryspacing",
+    category: "entry-spacing",
+    keywords: ["entryspacing"],
+    patterns: ["entryspacing 24"],
+    description: "Sets vertical spacing between entries.",
+    examples: ["entryspacing 24"],
+    insertText: "entryspacing ${1:24}",
+    detail: "Entry spacing",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 35
+  },
+  {
+    id: "lifelinestyle",
+    category: "life-line-style",
+    keywords: ["lifelinestyle"],
+    patterns: ["lifelinestyle solid"],
+    description: "Configures lifeline stroke style.",
+    examples: ["lifelinestyle dashed"],
+    insertText: "lifelinestyle ${1|solid,dashed,dotted|}",
+    detail: "Life line style",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 35
+  },
+  {
+    id: "legacy-style",
+    category: "legacy-styling",
+    keywords: ["skinparam", "participantColor", "lineColor"],
+    patterns: ["skinparam participantColor #eef"],
+    description: "Legacy styling directives kept for compatibility.",
+    examples: ["skinparam lineColor #444"],
+    insertText: "skinparam ${1:participantColor} ${2:#eef}",
+    detail: "Legacy styling",
+    kind: "snippet",
+    triggerContexts: ["lineStart", "any"],
+    priority: 15,
+    legacy: true
+  }
+];
+
+export const catalogByKeyword = new Map<string, SyntaxEntry[]>(
+  syntaxCatalog.flatMap((entry) => entry.keywords.map((keyword) => [keyword.toLowerCase(), [entry] as SyntaxEntry[]]))
+);
+
+for (const entry of syntaxCatalog) {
+  for (const keyword of entry.keywords) {
+    const key = keyword.toLowerCase();
+    const existing = catalogByKeyword.get(key) ?? [];
+    if (!existing.some((candidate) => candidate.id === entry.id)) {
+      existing.push(entry);
+    }
+    catalogByKeyword.set(key, existing);
+  }
+}
+
+export const allSyntaxCategories = Array.from(new Set(syntaxCatalog.map((entry) => entry.category)));

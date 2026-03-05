@@ -1,0 +1,194 @@
+{
+  "name": "sequencediagram-vscode",
+  "displayName": "SequenceDiagram for VS Code",
+  "description": "Edit .seqdiag files in VS Code with live SequenceDiagram preview, export, and writing assistance.",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.6.5",
+  "publisher": "dperrella001",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dperrella001/SequenceDiagram.git"
+  },
+  "homepage": "https://github.com/dperrella001/SequenceDiagram#readme",
+  "bugs": {
+    "url": "https://github.com/dperrella001/SequenceDiagram/issues"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "sequence diagram",
+    "sequence",
+    "diagram",
+    "sequencediagram",
+    "seqdiag",
+    "uml",
+    "visualization",
+    "vscode extension"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:seqdiag",
+    "onCommand:sequencediagram.togglePreview",
+    "onCommand:sequencediagram.exportSvg",
+    "onCommand:sequencediagram.exportPng",
+    "onCommand:sequencediagram.reloadPreview",
+    "onCommand:sequencediagram.insertSnippet"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "seqdiag",
+        "aliases": [
+          "SequenceDiagram",
+          "seqdiag"
+        ],
+        "extensions": [
+          ".seqdiag"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "sequencediagram.togglePreview",
+        "title": "SequenceDiagram: Toggle Preview",
+        "category": "SequenceDiagram",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "sequencediagram.exportSvg",
+        "title": "SequenceDiagram: Export SVG",
+        "category": "SequenceDiagram",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "sequencediagram.exportPng",
+        "title": "SequenceDiagram: Export PNG",
+        "category": "SequenceDiagram",
+        "icon": "$(file-media)"
+      },
+      {
+        "command": "sequencediagram.reloadPreview",
+        "title": "SequenceDiagram: Reload Preview",
+        "category": "SequenceDiagram",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "sequencediagram.insertSnippet",
+        "title": "SequenceDiagram: Insert Snippet",
+        "category": "SequenceDiagram",
+        "icon": "$(symbol-snippet)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "sequencediagram.togglePreview",
+          "when": "resourceExtname == .seqdiag",
+          "group": "navigation"
+        },
+        {
+          "command": "sequencediagram.reloadPreview",
+          "when": "resourceExtname == .seqdiag",
+          "group": "navigation"
+        },
+        {
+          "command": "sequencediagram.insertSnippet",
+          "when": "resourceExtname == .seqdiag",
+          "group": "navigation"
+        },
+        {
+          "command": "sequencediagram.exportSvg",
+          "when": "resourceExtname == .seqdiag",
+          "group": "navigation"
+        },
+        {
+          "command": "sequencediagram.exportPng",
+          "when": "resourceExtname == .seqdiag",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "sequencediagram.insertSnippet",
+          "when": "editorLangId == seqdiag"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "SequenceDiagram",
+      "properties": {
+        "sequencediagram.defaultDiagram": {
+          "type": "string",
+          "default": "title Example\\nAlice->Bob: Hello Bob\\nBob-->Alice: Hi Alice",
+          "description": "Default diagram text used by extension workflows that create new untitled diagrams."
+        },
+        "sequencediagram.preview.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable remote preview and export using the public SequenceDiagram renderer."
+        },
+        "sequencediagram.preview.debounceMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "Debounce in milliseconds before refreshing the preview."
+        },
+        "sequencediagram.export.defaultFormat": {
+          "type": "string",
+          "enum": [
+            "svg",
+            "png"
+          ],
+          "default": "svg",
+          "description": "Preferred export format for SequenceDiagram diagrams."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "clean:dist": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "clean:dist-test": "node -e \"require('node:fs').rmSync('dist-test', { recursive: true, force: true })\"",
+    "build": "corepack pnpm clean:dist && corepack pnpm build:extension && corepack pnpm build:webview",
+    "build:extension": "tsc -p ./",
+    "build:webview": "node ./scripts/build-webview.mjs",
+    "build:test": "corepack pnpm clean:dist-test && tsc -p ./tsconfig.test.json",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src",
+    "package": "corepack pnpm build && vsce package",
+    "package:check": "corepack pnpm build && vsce ls",
+    "release:preflight": "node ./scripts/release-preflight.mjs",
+    "publish:marketplace": "corepack pnpm release:preflight && vsce publish",
+    "test": "corepack pnpm test:watchdog",
+    "test:unit": "vitest run test/unit --config vitest.config.ts",
+    "test:webview": "vitest run test/webview --config vitest.config.ts",
+    "test:integration": "corepack pnpm build && corepack pnpm build:test && node ./dist-test/test/integration/runIntegration.js",
+    "test:ui": "corepack pnpm build && corepack pnpm build:test && node ./dist-test/test/ui/runUiSmoke.js",
+    "test:watchdog": "corepack pnpm build:test && node ./dist-test/test/watchdog/runAll.js",
+    "test:fix-hints": "corepack pnpm build:test && node ./dist-test/test/watchdog/fixHints.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.1",
+    "@types/vscode": "^1.95.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "typescript-eslint": "^8.18.1",
+    "esbuild": "^0.25.1",
+    "eslint": "^9.17.0",
+    "@eslint/js": "^9.17.0",
+    "jsdom": "^26.0.0",
+    "mocha": "^10.8.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4",
+    "vscode-extension-tester": "^8.11.2",
+    "vsce": "^2.15.0"
+  }
+}

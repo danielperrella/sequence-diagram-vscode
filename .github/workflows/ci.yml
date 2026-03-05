@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: corepack pnpm install --frozen-lockfile
+      - run: corepack pnpm lint
+      - run: corepack pnpm build
+      - run: corepack pnpm test:unit
+      - run: corepack pnpm test:webview
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validate-artifacts
+          path: .artifacts
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: corepack pnpm install --frozen-lockfile
+      - run: corepack pnpm test:integration
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-artifacts
+          path: .artifacts
+
+  ui-smoke:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: sudo apt-get update && sudo apt-get install -y xvfb
+      - run: corepack enable
+      - run: corepack pnpm install --frozen-lockfile
+      - run: xvfb-run -a env SEQUENCEDIAGRAM_ENABLE_UI_TESTS=1 corepack pnpm test:ui
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-artifacts
+          path: .artifacts
+
+  watchdog-summary:
+    runs-on: ubuntu-latest
+    needs:
+      - validate
+      - integration
+      - ui-smoke
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: corepack pnpm install --frozen-lockfile
+      - run: corepack pnpm test || true
+      - name: Publish summary
+        run: |
+          if [ -f .artifacts/test-runs/latest/watchdog-report.md ]; then
+            cat .artifacts/test-runs/latest/watchdog-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: watchdog-artifacts
+          path: .artifacts

@@ -1,0 +1,65 @@
+name: Publish Marketplace
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish to VS Code Marketplace"
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  package-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
+
+      - name: Preflight checks
+        run: corepack pnpm release:preflight
+
+      - name: Validate tracked working tree is clean
+        run: |
+          git update-index -q --refresh
+          git diff --quiet
+          git diff --cached --quiet
+
+      - name: Quality gate
+        run: |
+          corepack pnpm lint
+          corepack pnpm build
+          corepack pnpm test:unit
+          corepack pnpm test:webview
+
+      - name: Package VSIX
+        run: corepack pnpm package
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsix-package
+          path: "*.vsix"
+          if-no-files-found: error
+
+      - name: Publish to VS Code Marketplace
+        if: inputs.publish == true
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo "VSCE_PAT secret is required for publishing"
+            exit 1
+          fi
+          npx vsce publish --pat "$VSCE_PAT"

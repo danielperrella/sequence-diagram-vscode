@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-test/
+.artifacts/
+media/webview-runtime.js
+media/webview-runtime.js.map
+*.vsix
+.DS_Store
+.vscode-test/
+__MACOSX/
