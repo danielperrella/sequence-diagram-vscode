@@ -10,11 +10,11 @@
   "icon": "media/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dperrella001/SequenceDiagram.git"
+    "url": "https://github.com/danielperrella/sequence-diagram-vscode.git"
   },
-  "homepage": "https://github.com/dperrella001/SequenceDiagram#readme",
+  "homepage": "https://github.com/danielperrella/sequence-diagram-vscode#readme",
   "bugs": {
-    "url": "https://github.com/dperrella001/SequenceDiagram/issues"
+    "url": "https://github.com/danielperrella/sequence-diagram-vscode/issues"
   },
   "engines": {
     "vscode": "^1.95.0"
