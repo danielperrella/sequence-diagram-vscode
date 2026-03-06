@@ -36,12 +36,7 @@
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onLanguage:seqdiag",
-    "onCommand:sequencediagram.togglePreview",
-    "onCommand:sequencediagram.exportSvg",
-    "onCommand:sequencediagram.exportPng",
-    "onCommand:sequencediagram.reloadPreview",
-    "onCommand:sequencediagram.insertSnippet"
+    "onLanguage:seqdiag"
   ],
   "contributes": {
     "languages": [
@@ -59,31 +54,31 @@
     "commands": [
       {
         "command": "sequencediagram.togglePreview",
-        "title": "SequenceDiagram: Toggle Preview",
+        "title": "Toggle Preview",
         "category": "SequenceDiagram",
         "icon": "$(open-preview)"
       },
       {
         "command": "sequencediagram.exportSvg",
-        "title": "SequenceDiagram: Export SVG",
+        "title": "Export SVG",
         "category": "SequenceDiagram",
         "icon": "$(file-code)"
       },
       {
         "command": "sequencediagram.exportPng",
-        "title": "SequenceDiagram: Export PNG",
+        "title": "Export PNG",
         "category": "SequenceDiagram",
         "icon": "$(file-media)"
       },
       {
         "command": "sequencediagram.reloadPreview",
-        "title": "SequenceDiagram: Reload Preview",
+        "title": "Reload Preview",
         "category": "SequenceDiagram",
         "icon": "$(refresh)"
       },
       {
         "command": "sequencediagram.insertSnippet",
-        "title": "SequenceDiagram: Insert Snippet",
+        "title": "Insert Snippet",
         "category": "SequenceDiagram",
         "icon": "$(symbol-snippet)"
       }

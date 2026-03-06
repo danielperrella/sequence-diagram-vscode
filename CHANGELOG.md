@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- remove deprecated `onCommand:*` activation events from extension manifest.
+- fix command palette labels by avoiding duplicated `SequenceDiagram` prefix in command titles.
+
 ## 1.0.0 - 2026-03-05
 
 - remove configurable renderer modes; preview/export now always use the public `https://sequencediagram.org` runtime.
