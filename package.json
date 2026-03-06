@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.6.5",
   "author": "Daniel Perrella",
   "publisher": "PerrellaDaniel",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "icon": "media/icon.png",
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "Visualization"
   ],
   "keywords": [
+    "sequencediagram.org",
     "sequence diagram",
     "sequence",
     "diagram",
