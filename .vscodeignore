@@ -3,6 +3,7 @@
 .pnpm-store/**
 .vscode/**
 .vscode-test/**
+__MACOSX/**
 dist-test/**
 docs/**
 node_modules/**

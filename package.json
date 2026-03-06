@@ -2,7 +2,7 @@
   "name": "sequencediagram-vscode",
   "displayName": "SequenceDiagram for VS Code",
   "description": "Edit .seqdiag files in VS Code with live SequenceDiagram preview, export, and writing assistance.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@10.6.5",
   "author": "Daniel Perrella",
   "publisher": "PerrellaDaniel",
