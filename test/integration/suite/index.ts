@@ -1,44 +1,27 @@
-import * as assert from "node:assert";
 import * as path from "node:path";
-import * as vscode from "vscode";
-import { suite, test } from "mocha";
+import Mocha from "mocha";
 
-suite("SequenceDiagram integration", () => {
-  test("registers the extension and opens a .seqdiag document", async () => {
+export function run(): Promise<void> {
+  const mocha = new Mocha({
+    ui: "tdd",
+    color: true
+  });
+  const testsRoot = path.resolve(__dirname);
+
+  return new Promise((resolve, reject) => {
     try {
-      await vscode.workspace.getConfiguration().update(
-        "sequencediagram.preview.enabled",
-        false,
-        vscode.ConfigurationTarget.Global
-      );
+      mocha.addFile(path.resolve(testsRoot, "extension.integration.test.js"));
 
-      const extension = vscode.extensions.getExtension("dperrella001.sequencediagram-vscode");
-      await extension?.activate();
-      assert.ok(extension, "Extension should be available.");
+      mocha.run((failures) => {
+        if (failures > 0) {
+          reject(new Error(`${failures} integration test(s) failed.`));
+          return;
+        }
 
-      const fileUri = vscode.Uri.file(
-        path.join(vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd(), "test", "fixtures", "workspace", "sample.seqdiag")
-      );
-      const document = await vscode.workspace.openTextDocument(fileUri);
-      await vscode.window.showTextDocument(document);
-      await vscode.commands.executeCommand("sequencediagram.togglePreview");
-
-      assert.strictEqual(document.languageId, "seqdiag");
-
-      const completions = await vscode.commands.executeCommand<vscode.CompletionList>(
-        "vscode.executeCompletionItemProvider",
-        fileUri,
-        new vscode.Position(0, 0),
-        "#"
-      );
-      assert.ok(completions, "Completion provider should return items.");
-      assert.ok(completions.items.some((item) => item.label === "title"), "Expected title completion.");
-    } finally {
-      await vscode.workspace.getConfiguration().update(
-        "sequencediagram.preview.enabled",
-        undefined,
-        vscode.ConfigurationTarget.Global
-      );
+        resolve();
+      });
+    } catch (error) {
+      reject(error);
     }
   });
-});
+}

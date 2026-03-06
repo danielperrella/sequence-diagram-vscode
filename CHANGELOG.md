@@ -6,6 +6,7 @@
 - fix command palette labels by avoiding duplicated `SequenceDiagram` prefix in command titles.
 - run integration/watchdog CI suites under `xvfb-run` to avoid Linux headless `$DISPLAY` failures.
 - ensure UI smoke placeholder artifacts create `.artifacts/` before writing files in CI.
+- fix integration test bootstrap by adding an explicit Mocha runner (`ui: tdd`) and loading test files through it.
 
 ## 1.0.0 - 2026-03-05
 
