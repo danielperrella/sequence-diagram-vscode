@@ -5,6 +5,7 @@
 - remove deprecated `onCommand:*` activation events from extension manifest.
 - fix command palette labels by avoiding duplicated `SequenceDiagram` prefix in command titles.
 - run integration/watchdog CI suites under `xvfb-run` to avoid Linux headless `$DISPLAY` failures.
+- ensure UI smoke placeholder artifacts create `.artifacts/` before writing files in CI.
 
 ## 1.0.0 - 2026-03-05
 
